@@ -1,31 +1,23 @@
 // This is a server component example. Adjustments might be needed based on your specific setup.
 
-import { Button } from "@/components/ui/button";
+import { getCookies } from "@/actions/cookies";
+import IsAuthenticated from "./components/IsAuthenticated";
+import IsNotAuthenticated from "./components/IsNotAuthenticated";
 
-export default function Home() {
-  // Direct navigation using anchor tags in server components
+export default async function Home() {
+
+  const cookie = await getCookies("token");
+  
+  const isAuthenticaed = (cookie !== undefined) ? true : false; 
+
   return (
     <div className="w-screen min-h-screen m-0 p-0">
-      <div className="flex flex-col items-center">
-        <div className="flex flex-row justify-center gap-4">
-          <div>
-            {/* Using an anchor tag for navigation */}
-            <a href="/sign-in" style={{ textDecoration: 'none' }}>
-              <Button>
-                Signin
-              </Button>
-            </a>
-          </div>
-          <div>
-            {/* Using an anchor tag for navigation */}
-            <a href="/sign-up" style={{ textDecoration: 'none' }}>
-              <Button>
-                Signup
-              </Button>
-            </a>
-          </div>
-        </div>
-      </div>
+      {isAuthenticaed ? (
+        <IsAuthenticated/>
+      ) : (
+        // Render this if the user is not authenticated
+        <IsNotAuthenticated/>
+      )}
     </div>
   );
 }

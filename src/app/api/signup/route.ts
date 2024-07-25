@@ -1,9 +1,10 @@
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 
 
 import client from "@/app/libs/prismadb";
 import { NextResponse } from "next/server";
 import { sign } from "@dfordp1101/custom-jwt-lib";
+import { authentication, random } from "../../../../helpers";
 
 export async function POST(  request: Request){
     try {
@@ -17,12 +18,15 @@ export async function POST(  request: Request){
             return new NextResponse('Missing info', {status:400})
           }
 
-          const hashedPassword = await bcrypt.hash(password, 12);
+          const rand = await random()
+
+          const hashedPassword = await authentication(rand,password);
 
           const user = await client.user.create({
             data: {
               email,
-              password: hashedPassword
+              password: hashedPassword,
+              salt : rand
             }
           });
 
